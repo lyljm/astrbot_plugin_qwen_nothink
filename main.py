@@ -47,6 +47,4 @@ class QwenThinkPlugin(Star):
         
         # Add enable_thinking parameter to request
         # The extra_params dict is passed to the LLM API call
-        if not hasattr(req, 'extra_params'):
-            req.extra_params = {}
-        req.extra_params['enable_thinking'] = think_enabled
+        req.contexts.append({"think":think_enabled})
