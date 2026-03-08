@@ -57,7 +57,7 @@ class QwenThinkPlugin(Star):
                 custom_extra_body = dict(provider.provider_config.get('custom_extra_body', {}))
                 # 设置 think 参数
                 custom_extra_body['chat_template_kwargs'] = {
-                    "enable_thinking": False,
+                    "enable_thinking": think_enabled,
                 }
                 provider.provider_config['custom_extra_body'] = custom_extra_body
                 logger.info(f"[think_mode] 已设置 custom_extra_body = {provider.provider_config.get('custom_extra_body', {})}")
