@@ -56,7 +56,7 @@ class QwenThinkPlugin(Star):
             prompt="Hello, world!",
             think="False",
         )
-        print(llm_resp.completion_text) # 获取返回的文本
+        logger.info(llm_resp) # 获取返回的文本
 
         # try:
         #     provider = self.context.get_using_provider(event.unified_msg_origin)
