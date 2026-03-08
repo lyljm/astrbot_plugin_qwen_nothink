@@ -49,27 +49,21 @@ class QwenThinkPlugin(Star):
         # Add enable_thinking parameter to request
         # The extra_params dict is passed to the LLM API call
         #req.contexts.append({"think":think_enabled})
-        umo = event.unified_msg_origin
-        provider_id = await self.context.get_current_chat_provider_id(umo=umo)
-        llm_resp = await self.context.llm_generate(
-            chat_provider_id=provider_id, # 聊天模型 ID
-            prompt="Hello, world!",
-            think="False",
-        )
-        logger.info(llm_resp) # 获取返回的文本
 
-        # try:
-        #     provider = self.context.get_using_provider(event.unified_msg_origin)
-        #     if provider and hasattr(provider, 'provider_config'):
-        #         # 获取当前的 custom_extra_body（复制一份，避免影响原始配置）
-        #         custom_extra_body = dict(provider.provider_config.get('custom_extra_body', {}))
-        #         # 设置 think 参数
-        #         custom_extra_body['think'] = think_enabled
-        #         provider.provider_config['custom_extra_body'] = custom_extra_body
-        #         logger.info(f"[think_mode] 已设置 custom_extra_body = {custom_extra_body}")
-        #         logger.info(f"[think_mode] Provider type: {type(provider).__name__}, api_base: {provider.provider_config.get('api_base', 'N/A')}")
-        #     else:
-        #         logger.warning(f"[think_mode] 未找到 Provider 或 provider_config 属性")
-        # except Exception as e:
-        #     logger.error(f"[think_mode] 设置 Provider custom_extra_body 失败: {e}")
+        try:
+            provider = self.context.get_using_provider(event.unified_msg_origin)
+            if provider and hasattr(provider, 'provider_config'):
+                # 获取当前的 custom_extra_body（复制一份，避免影响原始配置）
+                custom_extra_body = dict(provider.provider_config.get('custom_extra_body', {}))
+                # 设置 think 参数
+                custom_extra_body['chat_template_kwargs'] = {
+                    "enable_thinking": False,
+                }
+                provider.provider_config['custom_extra_body'] = custom_extra_body
+                logger.info(f"[think_mode] 已设置 custom_extra_body = {provider.provider_config.get('custom_extra_body', {})}")
+                logger.info(f"[think_mode] Provider type: {type(provider).__name__}, api_base: {provider.provider_config.get('api_base', 'N/A')}")
+            else:
+                logger.warning(f"[think_mode] 未找到 Provider 或 provider_config 属性")
+        except Exception as e:
+            logger.error(f"[think_mode] 设置 Provider custom_extra_body 失败: {e}")
 
